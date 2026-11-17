@@ -1,0 +1,39 @@
+name: Build Bruce DIY N16R8
+
+on:
+  workflow_dispatch:
+    inputs:
+      board:
+        description: 'Board target to build'
+        required: true
+        default: 'DIY-N16R8'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install PlatformIO
+        run: |
+          pip install platformio
+
+      - name: Install PlatformIO dependencies
+        run: |
+          pio pkg install
+
+      - name: Build Bruce DIY-N16R8
+        run: |
+          pio run -e DIY-N16R8
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: bruce-diy-n16r8-bin
+          path: .pioenvs/DIY-N16R8/firmware.bin
